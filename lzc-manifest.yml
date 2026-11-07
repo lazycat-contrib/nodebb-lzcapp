@@ -38,8 +38,8 @@ services:
     depends_on:
       - nodebb-db
   nodebb-db:
-    # upstream: library/mongo:7.0.14
-    image: docker.1ms.run/library/mongo:7.0.14
+    # upstream: library/mongo:7.0.45
+    image: docker.1ms.run/library/mongo:7.0.45
     environment:
       - TZ=Asia/Shanghai
     binds:
