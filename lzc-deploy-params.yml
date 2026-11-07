@@ -7,7 +7,7 @@ params:
     optional: false
 
   - id: admin_email
-    type: text
+    type: string
     name: "管理员邮箱"
     description: "NodeBB 管理员账号 admin 的邮箱地址"
     default_value: "admin@example.com"
