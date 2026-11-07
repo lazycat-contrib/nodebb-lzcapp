@@ -1,0 +1,30 @@
+params:
+  - id: nbb_pw
+    type: secret
+    name: "管理员密码"
+    description: "NodeBB 管理员账号 admin 的密码（已预置随机值，部署后请尽快修改）"
+    default_value: "c21ebe878cbc0243a5375906"
+    optional: false
+
+  - id: admin_email
+    type: text
+    name: "管理员邮箱"
+    description: "NodeBB 管理员账号 admin 的邮箱地址"
+    default_value: "admin@example.com"
+    optional: false
+
+locales:
+  zh:
+    admin_email:
+      name: "管理员邮箱"
+      description: "NodeBB 管理员账号 admin 的邮箱地址"
+    nbb_pw:
+      name: "管理员密码"
+      description: "NodeBB 管理员账号 admin 的密码（已预置随机值，部署后请尽快修改）"
+  en:
+    admin_email:
+      name: "Admin email"
+      description: "Email address for the NodeBB admin account"
+    nbb_pw:
+      name: "Admin password"
+      description: "Password for the NodeBB admin account (pre-filled with a random value, change it after first login)"

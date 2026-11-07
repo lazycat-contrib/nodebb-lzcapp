@@ -1,0 +1,65 @@
+application:
+  subdomain: nodebb
+  multi_instance: false
+  # 首次启动经环境变量全自动完成安装并创建管理员账号（src/install.js 的
+  # checkSetupFlagEnv 路径），属于自助建号路径，按 papra/servas 判例加 public_path，
+  # 由应用自身登录页鉴权。
+  public_path:
+    - /
+  upstreams:
+    - location: /package-licenses/
+      backend: file:///lzcapp/pkg/content/licenses/
+    - location: /
+      backend: http://nodebb:4567/
+services:
+  nodebb:
+    # upstream: ghcr.io/nodebb/nodebb:3.8.2
+    image: ghcr.1ms.run/nodebb/nodebb:3.8.2
+    # 首启 config.json 不存在：循环等 mongo 可用后跑全自动 install（exec 形式
+    # ENTRYPOINT，不能覆盖 command，用 entrypoint 包装，garage/easyappointments 判例）；
+    # install 生成 config.json 后交给原生 entrypoint.sh 正常启动。
+    entrypoint: ["/bin/sh", "-c", "until timeout 2 sh -c 'exec 3<>/dev/tcp/nodebb-db/27017' 2>/dev/null; do echo waiting for mongo; sleep 3; done; if [ ! -f /opt/config/config.json ]; then /usr/src/app/nodebb setup --config=/opt/config/config.json; fi; exec /usr/local/bin/entrypoint.sh"]
+    environment:
+      - TZ=Asia/Shanghai
+      - NODEBB_URL=https://{{.S.AppDomain}}
+      - NODEBB_PORT=4567
+      - NODEBB_ADMIN_USERNAME=admin
+      - NODEBB_ADMIN_PASSWORD={{PASSWORD_nbb_pw}}
+      - NODEBB_ADMIN_EMAIL={{ .U.admin_email }}
+      - NODEBB_DB=mongo
+      - NODEBB_DB_HOST=nodebb-db
+      - NODEBB_DB_PORT=27017
+      - NODEBB_DB_NAME=nodebb
+      - CONFIG_DIR=/opt/config
+      - START_BUILD=false
+    binds:
+      - /lzcapp/var/config:/opt/config
+      - /lzcapp/var/uploads:/usr/src/app/public/uploads
+    depends_on:
+      - nodebb-db
+  nodebb-db:
+    # upstream: library/mongo:7.0.14
+    image: docker.1ms.run/library/mongo:7.0.14
+    environment:
+      - TZ=Asia/Shanghai
+    binds:
+      - /lzcapp/var/db:/data/db
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet --eval \"db.adminCommand( { ping: 1 } )\" || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+usage: |
+  NodeBB 是一个开源论坛系统，提供分类板块、实时聊天、通知推送、
+  丰富的插件与主题生态，是 Discourse 的轻量替代方案。
+
+  使用方法：
+  1. 首次启动会自动完成数据库初始化并创建管理员账号（约需 1-3 分钟，期间页面可能暂时无法访问，请耐心等待）。
+  2. 管理员账号为 admin，密码使用部署参数中预置的随机值，登录后请立即修改。
+  3. 配置存放在 /lzcapp/var/config，上传文件存放在 /lzcapp/var/uploads，数据库存放在 /lzcapp/var/db。
+
+  说明：
+  - 本包未做实机验证，功能以官方文档为准：https://docs.nodebb.org/
+  - 应用自带完整账号体系并以自身登录页鉴权（public_path 直连）。
+  - MongoDB 实例仅限应用内部网络访问，未开放对外端口。
