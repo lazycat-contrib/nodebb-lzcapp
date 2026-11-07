@@ -21,7 +21,7 @@ images:
     source: ghcr.io/nodebb/nodebb
     channel: stable
     sort: semver
-    tag_regex: ^v?[0-9]+[.][0-9]+[.][0-9]+$
+    tag_regex: '^7\.0\.\d+$'
     delivery:
       mode: mirror
       require_digest_match: true
@@ -31,7 +31,7 @@ images:
     source: library/mongo
     channel: stable
     sort: semver
-    tag_regex: "^7\.0\.\d+$"
+    tag_regex: ^7\.0\.\d+$
     delivery:
       mode: mirror
       require_digest_match: true
