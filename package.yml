@@ -1,6 +1,6 @@
 package: community.lazycat.app.nodebb
 name: NodeBB
-version: 3.8.2
+version: 4.16.7
 description: "Open-source forum software: categories, real-time chat, notifications, plugins and themes."
 min_os_version: "1.5.0"
 homepage: https://nodebb.org

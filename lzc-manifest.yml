@@ -13,8 +13,8 @@ application:
       backend: http://nodebb:4567/
 services:
   nodebb:
-    # upstream: ghcr.io/nodebb/nodebb:3.8.2
-    image: ghcr.1ms.run/nodebb/nodebb:3.8.2
+    # upstream: ghcr.io/nodebb/nodebb:4.16.7
+    image: ghcr.1ms.run/nodebb/nodebb:4.16.7
     # 首启 config.json 不存在：循环等 mongo 可用后跑全自动 install（exec 形式
     # ENTRYPOINT，不能覆盖 command，用 entrypoint 包装，garage/easyappointments 判例）；
     # install 生成 config.json 后交给原生 entrypoint.sh 正常启动。
